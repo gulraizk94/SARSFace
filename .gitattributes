@@ -1,0 +1,5 @@
+checkpoints/* filter=lfs diff=lfs merge=lfs -text
+ibug/face_detection/retina_face/weights/* filter=lfs diff=lfs merge=lfs -text
+predef/* filter=lfs diff=lfs merge=lfs -text
+checkpoints/SEMM/* filter=lfs diff=lfs merge=lfs -text
+checkpoints/SEMM/17700k_checkpoint.pth filter=lfs diff=lfs merge=lfs -text

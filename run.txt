@@ -1,0 +1,2 @@
+python -m face_process.detail_process --input ./demo/input --output ./demo/output --gpu_ids -1
+
