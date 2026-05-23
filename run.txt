@@ -1,2 +1,3 @@
-/home/746705/.conda/envs/nanovlm/bin/python -m face_process.detail_process --input ./demo/input --output ./demo/output --gpu_ids -1
+For CPU /home/746705/.conda/envs/nanovlm/bin/python -m face_process.detail_process --input ./demo/input --output ./demo/output --gpu_ids -1
 
+For GPU /home/746705/.conda/envs/nanovlm/bin/python -m face_process.detail_process --input ./demo/input --output ./demo/output
