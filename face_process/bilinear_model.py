@@ -1,4 +1,9 @@
 import pickle
+import sys
+import sklearn.mixture
+
+# Create a fake module alias so pickle can find it (This is the path for new scikit-learn, if you have old version then you can remove this)
+sys.modules['sklearn.mixture.gaussian_mixture'] = sklearn.mixture
 
 import numpy as np
 from scipy.optimize import least_squares

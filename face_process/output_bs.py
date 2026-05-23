@@ -3,8 +3,7 @@ import pickle
 from os.path import join
 
 import numpy as np
-import openmesh as om
-
+import trimesh
 from util.facescape_bs import get_bs_weight, FaceScapeBlendshape
 from copy import deepcopy
 import logging
@@ -13,10 +12,18 @@ import logging
 class OutputMeshBlendshapeKeyExp:
     def __init__(self, bilinear_model, predef_path):
         self.bilinear_model = bilinear_model
-        self.template_mesh = om.read_trimesh(f'{predef_path}/convert_vt.obj', vertex_tex_coord=True)
-        self.full_template_mesh = om.read_trimesh(f'{predef_path}/convert_vt_full.obj', vertex_tex_coord=True)
+        self.template_mesh = trimesh.load(
+            f'{predef_path}/convert_vt.obj',
+            process=False)        
+        self.full_template_mesh = trimesh.load(
+            f'{predef_path}/convert_vt_full.obj',
+            process=False, maintain_order=True,
+            merge_tex=False,     # Forces isolation of vertices with different UVs
+            merge_norm=False     # Forces isolation of vertices with different Normals
+        )
+        print(self.full_template_mesh.vertices.shape)
         self.indices = np.loadtxt(f'{predef_path}/front_vert_indices.txt', dtype=np.int32)
-        self.bs_weight = get_bs_weight(full_bs=True)
+        self.bs_weight = get_bs_weight(full_bs=True)        
 
     def process(self, root_path, param=None):
         if param is None:
@@ -33,22 +40,34 @@ class OutputMeshBlendshapeKeyExp:
         verts = self.bilinear_model.get_posed_face_from_id_mat(id_mat, param['exp'])
 
         template_mesh = deepcopy(self.template_mesh)
-        template_mesh.points()[:] = verts[self.indices]
-        om.write_mesh(join(root_path, 'current.obj'), template_mesh, vertex_tex_coord=True)
-
+        
+        template_mesh.vertices[:] = verts[self.indices]
+        trimesh.Trimesh(
+            vertices=self.template_mesh.vertices,
+            faces=self.template_mesh.faces
+        ).export(join(root_path, 'current.obj'))
         full_template_mesh = deepcopy(self.full_template_mesh)
-        full_template_mesh.points()[:] = verts
-        om.write_mesh(join(root_path, 'full_large.obj'), full_template_mesh, vertex_tex_coord=True)
-
+        print(full_template_mesh.vertices.shape)
+        full_template_mesh.vertices[:] = verts
+        full_mesh = trimesh.Trimesh(
+            vertices=verts,
+            faces=self.full_template_mesh.faces,
+            process=False
+        )
+        full_mesh.export(join(root_path, 'full_large.obj'))
         os.makedirs(join(root_path, 'bs'), exist_ok=True)
         for i in range(len(param['exp'])):
             new_exp = np.zeros(len(param['exp']))
             new_exp[0] = 1
             new_exp[i] = 1
             verts = self.bilinear_model.get_posed_face_from_id_mat(id_mat, new_exp)
-            self.template_mesh.points()[:] = verts[self.indices]
-            om.write_mesh(join(root_path, 'bs', f'{i}.obj'), self.template_mesh, vertex_tex_coord=True)
-
+            self.template_mesh.vertices[:] = verts[self.indices]
+            mesh = trimesh.Trimesh(
+                vertices=verts[self.indices],
+                faces=self.template_mesh.faces,
+                process=False
+            )
+            mesh.export(join(root_path, 'bs', f'{i}.obj'))
         os.makedirs(f'{root_path}/key_exp', exist_ok=True)
         for i, exp_name in enumerate(FaceScapeBlendshape.exp_list):
             print(str(i)+":"+exp_name)
@@ -65,5 +84,10 @@ class OutputMeshBlendshapeKeyExp:
             verts = self.bilinear_model.get_posed_face_from_id_mat(id_mat, np.concatenate(
                 [np.ones(1), self.bs_weight[i]]))
             print(len(verts))
-            template_mesh.points()[:] = verts[self.indices]
-            om.write_mesh(f'{root_path}/key_exp/{exp_name}.obj', template_mesh, vertex_tex_coord=True)
+            template_mesh.vertices[:] = verts[self.indices]
+            mesh = trimesh.Trimesh(
+                vertices=template_mesh.vertices,
+                faces=template_mesh.faces,
+                process=False
+            )
+            mesh.export(f'{root_path}/key_exp/{exp_name}.obj')

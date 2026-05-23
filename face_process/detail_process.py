@@ -3,7 +3,7 @@ import os
 
 import cv2
 import numpy as np
-import openmesh as om
+import trimesh
 import torch
 import torchvision.transforms.functional as F
 from PIL import Image
@@ -25,10 +25,14 @@ class DetailProcessor:
 
         logging.info(f'Init bilinear model')
         self.bilinear_model = BilinearModel(self.opt.predef_dir)
-        self.bs_template_mesh = om.read_trimesh(f'{self.opt.predef_dir}/convert_vt.obj', vertex_tex_coord=True)
-
+        self.bs_template_mesh = trimesh.load(
+            f'{self.opt.predef_dir}/convert_vt.obj',
+            process=False
+        )
         logging.info(f'Init landmark detector')
         alignment_device = get_device(self.opt.gpu_ids)
+        print("The allignment device is")
+        print(alignment_device)
         face_detector_class = (RetinaFacePredictor, 'RetinaFace')
         fd_model = face_detector_class[0].get_model()
         self.face_detector = face_detector_class[0](
