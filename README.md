@@ -71,7 +71,7 @@ pip install trimesh scikit-learn scikit-image
 
 ---
 
-## 📥 Download Pretrained Models & Data
+##  Download Pretrained Models & Data
 
 Place all downloaded files as described below **before** running any processing scripts.
 
@@ -102,7 +102,7 @@ Place all downloaded files as described below **before** running any processing 
 
 ---
 
-## 🔧 Install Blender & FFmpeg
+##  Install Blender & FFmpeg
 
 Install **Blender 3.2** and **FFmpeg** and ensure both are accessible from the shell:
 
@@ -135,7 +135,7 @@ ${blender_path}/3.2/python/bin/python3.10 -m pip install scipy
 
 ---
 
-## 🚀 Usage
+## Usage
 
 ### Data Preprocessing
 
@@ -179,7 +179,7 @@ Old scikit-learn versions (≤0.24) cannot be built from source on Python 3.10 d
 conda install -c conda-forge scikit-learn=1.0.2 -y
 ```
 
-> ⚠️ Do **not** try `pip install scikit-learn==0.18`, `0.19`, or `0.24` on Python 3.10 — these will all fail with `ModuleNotFoundError: No module named 'pkg_resources'`.
+> Do **not** try `pip install scikit-learn==0.18`, `0.19`, or `0.24` on Python 3.10 — these will all fail with `ModuleNotFoundError: No module named 'pkg_resources'`.
 
 ### Fix 4 — trimesh / scipy ufunc error
 
@@ -201,7 +201,7 @@ scikit-learn==1.0.2   (installed via conda)
 
 ---
 
-## 🧪 Environment Verification
+## Environment Verification
 
 ```bash
 python -c "import torch, cv2, trimesh, smplx, sklearn; print('All modules OK')"
@@ -211,18 +211,6 @@ ffmpeg -version
 
 ---
 
-## 📄 Citation
-
-If you use this code in your research, please cite:
-
-```bibtex
-@article{yourpaper2024,
-  title   = {Your Paper Title},
-  author  = {Author One and Author Two},
-  journal = {Conference / Journal Name},
-  year    = {2024}
-}
-```
 
 ---
 
