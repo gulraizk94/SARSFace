@@ -46,6 +46,13 @@ class OutputMeshBlendshapeKeyExp:
             vertices=self.template_mesh.vertices,
             faces=self.template_mesh.faces
         ).export(join(root_path, 'current.obj'))
+        
+        if opt.show_mesh:
+            
+            face_mesh_visulize = trimesh.Trimesh( vertices=self.template_mesh.vertices, faces=self.template_mesh.faces)
+            face_mesh_visulize.show()
+    
+    
         full_template_mesh = deepcopy(self.full_template_mesh)
         print(full_template_mesh.vertices.shape)
         full_template_mesh.vertices[:] = verts
@@ -55,6 +62,10 @@ class OutputMeshBlendshapeKeyExp:
             process=False
         )
         full_mesh.export(join(root_path, 'full_large.obj'))
+         if opt.show_mesh:
+            full_mesh.show()
+        
+        
         os.makedirs(join(root_path, 'bs'), exist_ok=True)
         for i in range(len(param['exp'])):
             new_exp = np.zeros(len(param['exp']))

@@ -17,6 +17,7 @@ from util import Visualizer
 class BaseOptions():
     def initialize(self, parser):
         # experiment specifics
+        parser.add_argument('--show_mesh', action='store_true',default=False, help='visualize the 3D mesh using trimesh')
         parser.add_argument('--name', type=str, required=True,
                             help='name of the experiment. It decides where to store samples and models')
         parser.add_argument('--easy_label', type=str, default="")
